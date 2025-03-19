@@ -92,8 +92,7 @@ npx playwright show-report
 •	Playwright traces are available for debugging. To view traces, use:
 npx playwright show-trace
 
-
-Challenges Faced:
+**Challenges Faced:**
 1. Handling CAPTCHA During User Registration
 Issue: The registration process on nopCommerce requires solving a CAPTCHA, which prevents automation from completing the process.
 Solution:
@@ -124,8 +123,7 @@ Solution:
 Implemented .github/workflows/playwright.yml to automate test execution in CI/CD.
 Used npx playwright install --with-deps to install required dependencies.
 
-
- Assumptions Made
+**** Assumptions Made****
 Guest Checkout is Disabled
 
 Assumed user registration is required before purchase.
@@ -139,15 +137,11 @@ Currency & Pricing Stay the Same
 
 Assumed price filters ($25 - $500) would consistently show two products.
 
-
-Improvements Made to Enhance the Framework
+**Improvements Made to Enhance the Framework**
 
 1.Improved Error Handling
 Added try-catch blocks for handling unexpected site errors.
 Example:
-typescript
-Copy
-Edit
 try {
     await page.click('button#checkout');
 } catch (error) {
