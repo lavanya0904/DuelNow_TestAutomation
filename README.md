@@ -92,3 +92,86 @@ npx playwright show-report
 •	Playwright traces are available for debugging. To view traces, use:
 npx playwright show-trace
 
+
+Challenges Faced:
+1. Handling CAPTCHA During User Registration
+Issue: The registration process on nopCommerce requires solving a CAPTCHA, which prevents automation from completing the process.
+Solution:
+Bypassed CAPTCHA by using a pre-created test account.
+Alternative: Used third-party CAPTCHA-solving services (if allowed in real-world scenarios).
+
+2. Dynamic Element Handling (Timeouts & Waiting)
+Issue: Some elements took longer to load (e.g., the price filter slider and order confirmation page).
+Solution:
+Used await page.waitForSelector() to ensure elements are fully loaded before interaction.
+Added { timeout: 20000, state: 'visible' } where needed.
+
+3. Test Failures Due to Hardcoded Selectors
+Issue: Certain elements' attributes (IDs, classes) were dynamic.
+Solution:
+Used Playwright locators (page.locator()) instead of hardcoded CSS/XPath.
+Preferred text-based locators for more stable element identification.
+
+4.Data Management for Unique User Creation
+Issue: Registering new users required unique email addresses.
+Solution:
+Generated random emails dynamically (testuser_{Date.now()}@example.com).
+Alternative: Used a pre-configured test account.
+
+5.CI/CD Integration with GitHub Actions
+Issue: Setting up Playwright testing in GitHub Actions.
+Solution:
+Implemented .github/workflows/playwright.yml to automate test execution in CI/CD.
+Used npx playwright install --with-deps to install required dependencies.
+
+
+ Assumptions Made
+Guest Checkout is Disabled
+
+Assumed user registration is required before purchase.
+Default Shipping & Payment Options Are Available
+
+Assumed at least one shipping and payment method is always available.
+Site is Consistently Available
+
+Assumed no major downtime or UI changes in nopCommerce.
+Currency & Pricing Stay the Same
+
+Assumed price filters ($25 - $500) would consistently show two products.
+
+
+Improvements Made to Enhance the Framework
+
+1.Improved Error Handling
+Added try-catch blocks for handling unexpected site errors.
+Example:
+typescript
+Copy
+Edit
+try {
+    await page.click('button#checkout');
+} catch (error) {
+    console.error("Checkout button not found", error);
+}
+
+3. Added Reporting & Debugging Tools
+Enabled Playwright's built-in reporting:
+reporter: [['html', { outputFolder: 'playwright-report' }]]
+Captured Screenshots & Videos on failure:
+use: { screenshot: 'only-on-failure', video: 'retain-on-failure' }
+
+4. Implemented Parallel Test Execution
+Reduces execution time.
+Configured Playwright to run tests in parallel:
+fullyParallel: true
+workers: 4
+
+5.Attempted Page Object Model (POM) Implementation
+To improve code reusability and maintainability.
+Created a pages/ folder and attempted to organize locators and functions into:
+registerPage.ts
+searchPage.ts
+checkoutPage.ts
+However, encountered issues with Playwright’s context handling across multiple pages.
+Future Improvement:
+Refactor tests to ensure POM implementation is fully effective.
