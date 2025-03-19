@@ -74,14 +74,43 @@ Viewing Test Results
 •	Test results, including screenshots, videos, and traces, are stored as artifacts in the GitHub Actions workflow.
 •	To view the artifacts, navigate to the Actions tab, select the latest workflow run, and download the artifacts.
 ________________________________________
-**Known Issues**
-1.	CAPTCHA or Security Checks:
-o	The website may display a CAPTCHA or security check during automated tests, causing timeouts.
-o	Workaround: Disable CAPTCHA in the test environment (if possible) or handle it manually during test execution.
-2.	Timeout Errors:
-o	Some tests may fail due to timeout issues with waitForSelector.
-o	Workaround: Increase the timeout value or verify that the selectors are correct.
-________________________________________
+** Issues**
+
+**Defect 1: CAPTCHA or Security Checks**
+**Defect ID: DEF-001**
+Title: CAPTCHA or Security Check Prevents Automated Execution
+Module: User Registration
+Environment: Windows 10, Playwright v1.41
+Description: The website displays a CAPTCHA/security check during automated tests, preventing successful user registration. This causes timeouts and blocks automation.
+Steps to Reproduce:
+Open https://demo.nopcommerce.com/register using Playwright.
+Fill in all required registration fields.
+Submit the registration form.
+Observe that the site prompts for CAPTCHA verification, causing test execution to fail.
+Expected Result: The user should be able to register successfully without manual intervention.
+Actual Result: CAPTCHA prompt prevents automation from completing the registration process.
+Severity: High (Blocks automated test execution).
+Priority: Medium.
+Workaround: Disable CAPTCHA in the test environment (if possible) or manually solve CAPTCHA during test execution.
+Attachments: Screenshots/log files (if applicable).
+
+**Defect 2: Timeout Errors Due to waitForSelector**
+**Defect ID: DEF-002**
+Title: Timeout Errors in Playwright Due to waitForSelector
+Module: Search, Checkout, Order History
+Environment: Windows 10, Playwright v1.41
+Description: Some Playwright tests fail due to timeouts when waiting for elements using waitForSelector(). This issue occurs intermittently, especially on slower networks.
+Steps to Reproduce:
+Run Playwright tests that require searching for a product or checking order history.
+The test waits for elements using await page.waitForSelector(selector, { timeout: 15000 }).
+On some occasions, the element is not found within the timeout period, causing the test to fail.
+Expected Result: The selector should be located within the timeout duration, and the test should proceed without failure.
+Actual Result: Tests fail due to timeout errors when waitForSelector() does not find the expected elements.
+Severity: Medium (Causes flaky tests).
+Priority: High.
+Workaround: Increase the timeout value or verify that the selectors are correct. Alternatively, use await page.waitForLoadState('domcontentloaded') before interacting with elements.
+Attachments: Screenshots/log files (if applicable).
+
 **Reporting and Artifacts**
 **Test Reports**
 •	Playwright generates an HTML report after each test run. To view the report, run:
@@ -139,7 +168,7 @@ Assumed price filters ($25 - $500) would consistently show two products.
 
 **Improvements Made to Enhance the Framework**
 
-1.Improved Error Handling
+**1.Improved Error Handling**
 Added try-catch blocks for handling unexpected site errors.
 Example:
 try {
@@ -148,19 +177,19 @@ try {
     console.error("Checkout button not found", error);
 }
 
-3. Added Reporting & Debugging Tools
+**2. Added Reporting & Debugging Tools**
 Enabled Playwright's built-in reporting:
 reporter: [['html', { outputFolder: 'playwright-report' }]]
 Captured Screenshots & Videos on failure:
 use: { screenshot: 'only-on-failure', video: 'retain-on-failure' }
 
-4. Implemented Parallel Test Execution
+**3. Implemented Parallel Test Execution**
 Reduces execution time.
 Configured Playwright to run tests in parallel:
 fullyParallel: true
 workers: 4
 
-5.Attempted Page Object Model (POM) Implementation
+**4.Attempted Page Object Model (POM) Implementation**
 To improve code reusability and maintainability.
 Created a pages/ folder and attempted to organize locators and functions into:
 registerPage.ts
